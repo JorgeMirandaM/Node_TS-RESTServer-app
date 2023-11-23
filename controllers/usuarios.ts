@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import Usuario from "../models/usuario";
 
 export const getUsuarios = async (req: Request, res: Response) => {
@@ -115,14 +115,27 @@ export const putUsuario = async (req: Request, res: Response) => {
     }
 }
 
-export const deleteUsuario = (req: Request, res: Response) => {
+export const deleteUsuario = async(req: Request, res: Response) => {
 
     const { id } = req.params;
 
-    res.json({
-        msg: 'deleteUsuario',
-        id
-    })
+    try {
+        const usuario = await Usuario.findByPk(id);
+
+        if (!usuario) {
+            return res.status(404).json({
+                msg: `the user with id: ${id} doesn't exist`
+            })
+        }
+
+        await usuario.update({estado:false});
+
+        res.json({usuario});
+    } catch (error) {
+        res.status(500).json({
+            msg: 'there was an error on server'
+        })
+    }
 }
 
 

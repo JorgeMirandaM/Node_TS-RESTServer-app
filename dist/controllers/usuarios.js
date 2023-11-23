@@ -115,12 +115,23 @@ const putUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.putUsuario = putUsuario;
-const deleteUsuario = (req, res) => {
+const deleteUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    res.json({
-        msg: 'deleteUsuario',
-        id
-    });
-};
+    try {
+        const usuario = yield usuario_1.default.findByPk(id);
+        if (!usuario) {
+            return res.status(404).json({
+                msg: `the user with id: ${id} doesn't exist`
+            });
+        }
+        yield usuario.update({ estado: false });
+        res.json({ usuario });
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: 'there was an error on server'
+        });
+    }
+});
 exports.deleteUsuario = deleteUsuario;
 //# sourceMappingURL=usuarios.js.map
