@@ -28,7 +28,7 @@ const usuario_1 = __importDefault(require("../models/usuario"));
 const getUsuarios = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const usuarios = yield usuario_1.default.findAll();
-        res.json([usuarios]);
+        res.json({ usuarios });
     }
     catch (error) {
         res.status(500).json({
@@ -41,11 +41,6 @@ const getUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const { id } = req.params;
         const usuario = yield usuario_1.default.findByPk(id);
-        if (!usuario) {
-            return res.status(404).json({
-                msg: `the user with the: ${id} does not exist`
-            });
-        }
         res.json({
             usuario
         });
@@ -60,16 +55,6 @@ exports.getUsuario = getUsuario;
 const postUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
     try {
-        const existeEmail = yield usuario_1.default.findOne({
-            where: {
-                email: body.email
-            }
-        });
-        if (existeEmail) {
-            return res.status(400).json({
-                msg: `the user with email: ${body.email} already exists`
-            });
-        }
         const { estado } = body, data = __rest(body, ["estado"]);
         const usuario = usuario_1.default.build(data);
         yield usuario.save();
@@ -90,16 +75,6 @@ const putUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!usuario) {
             return res.status(404).json({
                 msg: `the user with id: ${id} doesn't exist`
-            });
-        }
-        const existeEmail = yield usuario_1.default.findOne({
-            where: {
-                email: body.email
-            }
-        });
-        if (existeEmail) {
-            return res.status(400).json({
-                msg: `the user with email: ${body.email} already exists`
             });
         }
         const { estado } = body, data = __rest(body, ["estado"]);
